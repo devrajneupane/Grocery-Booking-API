@@ -1,0 +1,33 @@
+services:
+  backend:
+    container_name: grocery-backend
+    build:
+      dockerfile: ./Dockerfile.dev
+    ports:
+      - "${PORT}:${PORT}"
+    restart: always
+    depends_on:
+      - postgres
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
+        - action: rebuild
+          path: ./package.json
+
+  postgres:
+    container_name: grocery-postgres
+    image: postgres:16.3-alpine3.20
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  postgresql_data:
