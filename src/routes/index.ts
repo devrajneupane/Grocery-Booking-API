@@ -2,6 +2,7 @@ import express from "express";
 import { StatusCodes } from "http-status-codes";
 
 import userRouter from "./userRoute";
+import authRouter from "./authRoute";
 
 import { loggerWithNameSpace } from "../utils";
 
@@ -16,5 +17,6 @@ router.get("/", (_, res) => {
 });
 
 router.use("/users", userRouter);
+router.use("/", authRouter);
 
 export default router;
