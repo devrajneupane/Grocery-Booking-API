@@ -3,6 +3,8 @@ import { StatusCodes } from "http-status-codes";
 
 import userRouter from "./userRoute";
 import authRouter from "./authRoute";
+import itemRouter from "./itemRoute";
+import orderRouter from "./orderRoute";
 
 import { loggerWithNameSpace } from "../utils";
 
@@ -17,6 +19,8 @@ router.get("/", (_, res) => {
 });
 
 router.use("/users", userRouter);
+router.use("/items", itemRouter);
+router.use("/orders", orderRouter);
 router.use("/", authRouter);
 
 export default router;
