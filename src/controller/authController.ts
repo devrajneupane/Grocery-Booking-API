@@ -35,7 +35,7 @@ export async function login(req: Request, res: Response) {
  *
  * @param {IRequest} req Request Object
  * @param {Response} res Response Object
- * @rturns HTTP Response
+ * @returns HTTP Response
  */
 export async function refresh(req: Request, res: Response) {
   const { authorization } = req.headers;

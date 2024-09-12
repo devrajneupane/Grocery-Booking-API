@@ -23,7 +23,7 @@ export class ItemService {
 
     return {
       message: `All items retrieved successfully`,
-      data,
+      items: data,
     };
   }
 
@@ -48,8 +48,6 @@ export class ItemService {
    * @returns Item object
    */
   static async updateItem(itemId: number, itemData: Partial<IItem>) {
-    console.warn("DEBUGPRINT[8]: itemService.ts:50: itemId=", itemId)
-    console.warn("DEBUGPRINT[9]: itemService.ts:50: itemData=", itemData)
     // Prevent id from being updated
     const { id, ...updatedData } = itemData;
 
