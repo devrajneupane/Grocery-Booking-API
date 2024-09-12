@@ -1,13 +1,22 @@
 import Joi from "joi";
 
+// Schema for order create request body
 export const createOrderBodySchema = Joi.array()
-  .items({
-    itemId: Joi.number().required().messages({
-      "itemId.number": "Item id must be a number",
+  .items(
+    Joi.object({
+      itemId: Joi.number().required().messages({
+        "number.base": "Item ID must be a number",
+        "any.required": "Item ID is required",
+      }),
+      quantity: Joi.number().required().messages({
+        "number.base": "Quantity must be a number",
+        "any.required": "Quantity is required",
+      }),
     }),
-    quantity: Joi.number().required().messages({
-      "quantity.number": "Quantity must be a number",
-    }),
+  )
+  .min(1)
+  .messages({
+    "array.min": "Order must contain at least one item",
   })
   .options({
     stripUnknown: true,

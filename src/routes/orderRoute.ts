@@ -3,8 +3,8 @@ import { Router } from "express";
 import * as controller from "../controller/orderController";
 import { ROLE } from "../enums";
 import { authenticate, authorize } from "../middleware/auth";
-import * as validator from "../middleware/validator";
-import * as schema from "../schema";
+import { validateReqBody } from "../middleware/validator";
+import { createOrderBodySchema } from "../schema";
 import { requestHandler } from "../utils";
 
 const router = Router();
@@ -71,7 +71,7 @@ const router = Router();
  *                         format: date-time
  *                         example: "2024-09-11T02:46:49.244Z"
  *       400:
- *         description: Bad request - Invalid path parameters
+ *         description: Bad request - Invalid request body
  *         content:
  *           application/json:
  *             schema:
@@ -79,7 +79,7 @@ const router = Router();
  *               properties:
  *                 message:
  *                   type: string
- *                   example: id must be a number
+ *                   example: value must be an array
  *       401:
  *         description: Unauthorised - User is not authorized
  *         content:
@@ -106,8 +106,8 @@ router.post(
   requestHandler([
     authenticate,
     authorize([ROLE.ADMIN, ROLE.USER]),
-    validator.validateReqBody(schema.createOrderBodySchema),
-    controller.createItems,
+    validateReqBody(createOrderBodySchema),
+    requestHandler([controller.createItems]),
   ]),
 );
 

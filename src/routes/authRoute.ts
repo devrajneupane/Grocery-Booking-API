@@ -31,7 +31,7 @@ const router = Router();
  *               password:
  *                 type: string
  *                 description: The user's password.
- *                 example: user@1234
+ *                 example: User@1234
  *     responses:
  *       200:
  *         description: Successfully authenticated the user.

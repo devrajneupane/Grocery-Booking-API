@@ -1,6 +1,9 @@
 import { Router } from "express";
-import { requestHandler } from "../utils/requestWrapper";
+
 import * as controller from "../controller/userController";
+import { validateReqBody } from "../middleware/validator";
+import { createUserBodySchema } from "../schema";
+import { requestHandler } from "../utils/requestWrapper";
 
 const router = Router();
 
@@ -39,15 +42,39 @@ const router = Router();
  *        description: User created successfully
  *        content:
  *          application/json:
- *            example:
- *              message: User created succesfully
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: User created successfully
  *      409:
  *        description: Conflict - email already exists
  *        content:
  *          application/json:
- *            example:
- *              message: User with same email already exists
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: User with same email already exists
+ *      500:
+ *        description: Internal server error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: Internal Server Error
  */
-router.post("/", requestHandler([controller.createUser]));
+router.post(
+  "/",
+  requestHandler([
+    validateReqBody(createUserBodySchema),
+    controller.createUser,
+  ]),
+);
 
 export default router;

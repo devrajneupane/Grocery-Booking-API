@@ -112,7 +112,7 @@ router.get(
   requestHandler([
     authenticate,
     authorize([ROLE.ADMIN, ROLE.USER]),
-    validator.validateReqQuery(schema.userReqQuerySchema),
+    validator.validateReqQuery(schema.itemReqQuerySchema),
     controller.getItems,
   ]),
 );
@@ -212,7 +212,7 @@ router.get(
   requestHandler([
     authenticate,
     authorize([ROLE.ADMIN, ROLE.USER]),
-    validator.validateReqParams(schema.userReqParamSchema),
+    validator.validateReqParams(schema.itemReqParamSchema),
     controller.getItem,
   ]),
 );
@@ -222,7 +222,7 @@ router.get(
  * /items:
  *   post:
  *     summary: Create single or multiple items
- *     description: Endpoint to create multiple items in a single request.
+ *     description: Endpoint to create multiple items in a single request. only admin can perform this request
  *     tags: ['Items']
  *     requestBody:
  *       required: true
@@ -285,8 +285,28 @@ router.get(
  *                       lastUpdated:
  *                         type: date
  *                         example: 2024-09-11T00:00:00.000Z
+ *       400:
+ *         description: Bad request - Inavlid request body
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: quantityInStock is required
  *       401:
  *         description: Unauthorised - User is not authorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Token Not Found
+ *       403:
+ *         description: Forbidden - User is not allowed to perform this request
  *         content:
  *           application/json:
  *             schema:
@@ -311,6 +331,7 @@ router.post(
   requestHandler([
     authenticate,
     authorize([ROLE.ADMIN]),
+    validator.validateReqBody(schema.createItemBodySchema),
     controller.createItems,
   ]),
 );
@@ -320,7 +341,7 @@ router.post(
  * /items/{id}:
  *   patch:
  *     summary: Update an item
- *     description: Update one or more fields of an existing item.
+ *     description: Update one or more fields of an existing item. only admin can perform this request
  *     tags: ['Items']
  *     parameters:
  *       - in: path
@@ -385,8 +406,28 @@ router.post(
  *                     price:
  *                       type: number
  *                       example: 100
+ *       400:
+ *         description: Bad Request - Invalid request body
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: At least one field must be updated
  *       401:
  *         description: Unauthorised - User is not authorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Token Not Found
+ *       403:
+ *         description: Forbidden - User is not allowed to perform this request
  *         content:
  *           application/json:
  *             schema:
@@ -431,7 +472,7 @@ router.patch(
  * /items/{id}:
  *   delete:
  *     summary: Delete an item
- *     description: Remove a item from the database based on its ID.
+ *     description: Remove a item from the database based on its ID. only admin can perform this request
  *     tags: ['Items']
  *     parameters:
  *       - in: path
@@ -469,6 +510,26 @@ router.patch(
  *                     price:
  *                       type: number
  *                       example: 100
+ *       401:
+ *         description: Unauthorised - User is not authorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Token Not Found
+ *       403:
+ *         description: Forbidden - User is not allowed to perform this request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User 7d9cfefa-2dc2-4ca7-b968-87862c34225c is not authorized
  *       404:
  *         description: Item not found
  *         content:
@@ -495,7 +556,7 @@ router.delete(
   requestHandler([
     authenticate,
     authorize([ROLE.ADMIN]),
-    validator.validateReqParams(schema.userReqParamSchema),
+    validator.validateReqParams(schema.itemReqParamSchema),
     controller.deleteItem,
   ]),
 );
