@@ -1,5 +1,5 @@
+import { NextFunction, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { Response, NextFunction } from "express";
 
 import { BaseError } from "../error";
 import { IRequest } from "../interface";
@@ -47,9 +47,13 @@ export function genericErrorHandler(
       return res.status(error.statusCode).json({
         message: error.message,
       });
+    case error instanceof SyntaxError:
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: error.message,
+      });
     default:
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Errror",
       });
   }
-}
+  }

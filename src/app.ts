@@ -1,27 +1,31 @@
 import express from "express";
 
-import router from "./routes";
 import { env } from "./config";
-import { requestLogger } from "./middleware";
+import {
+  genericErrorHandler,
+  notFoundError,
+  requestLogger,
+} from "./middleware";
+import router from "./routes";
 import { loggerWithNameSpace } from "./utils";
-import { genericErrorHandler, notFoundError } from "./middleware";
-import swaggerDocs from "./utils/swagger";
 
 const logger = loggerWithNameSpace(__filename);
 
 const app = express();
+const port = env.port!;
 
 // Middleware to parse JSON bodies
-app.use(express.json());
+app.use(
+  express.json({
+    strict: true, // Enforces strict JSON parsing, preventing trailing commas
+  }),
+);
 
 // Middleware to log incoming requests
 app.use(requestLogger);
 
 // Middleware to handle all routes
 app.use(router);
-
-// Setup docs route
-swaggerDocs(app, +env.port!);
 
 // Middleware to handle not found routes
 app.use(notFoundError);
@@ -30,8 +34,7 @@ app.use(notFoundError);
 app.use(genericErrorHandler);
 
 // Start the server
-app.listen(env.port, () => {
-  const port = env.port!;
+app.listen(port, () => {
   logger.info(`Server started listening on port: ${port}`);
   logger.info(`Docs available at http://localhost:${port}/docs`);
 });

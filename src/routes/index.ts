@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 
-import userRouter from "./userRoute";
+import { loggerWithNameSpace } from "../utils";
+import swaggerDocs from "../utils/swagger";
 import authRouter from "./authRoute";
 import itemRouter from "./itemRoute";
 import orderRouter from "./orderRoute";
-
-import { loggerWithNameSpace } from "../utils";
+import userRouter from "./userRoute";
 
 const router = Router();
 const logger = loggerWithNameSpace(__filename);
@@ -37,5 +37,8 @@ router.use("/users", userRouter);
 router.use("/items", itemRouter);
 router.use("/orders", orderRouter);
 router.use("/", authRouter);
+
+// Add route for Swagger UI
+swaggerDocs(router);
 
 export default router;
